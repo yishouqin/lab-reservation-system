@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI机房预约系统 - 登录/注册</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="bg-animated"></div>
+  <div class="particles" id="particles"></div>
+
+  <header class="page-header">
+    <div class="page-header-left">
+      <div class="page-header-logo">🎀</div>
+      <span class="page-header-title">AI 机房预约系统</span>
+    </div>
+  </header>
+
+  <div class="auth-page">
+    <div class="auth-container">
+      <div class="glass-card auth-card">
+        <div class="auth-logo">
+          <div class="auth-logo-icon">🎀</div>
+          <h1 class="auth-title">AI 机房预约系统</h1>
+          <p class="auth-subtitle">智能推荐 · 高效调度 · 便捷预约</p>
+        </div>
+
+        <!-- 标签切换 -->
+        <div class="auth-tabs">
+          <div class="auth-tab active" id="tabLogin" onclick="switchTab('login')">🔑 登录</div>
+          <div class="auth-tab" id="tabRegister" onclick="switchTab('register')">✨ 注册</div>
+        </div>
+
+        <!-- 身份选择 -->
+        <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+          <div class="role-card active" onclick="selectRole('student', this)">
+            <div style="font-size: 28px;">🎓</div>
+            <div style="font-size: 14px; font-weight: 600;">学生</div>
+          </div>
+          <div class="role-card" onclick="selectRole('teacher', this)">
+            <div style="font-size: 28px;">👨‍🏫</div>
+            <div style="font-size: 14px; font-weight: 600;">教师</div>
+          </div>
+          <div class="role-card" onclick="selectRole('admin', this)">
+            <div style="font-size: 28px;">🔐</div>
+            <div style="font-size: 14px; font-weight: 600;">管理员</div>
+          </div>
+        </div>
+
+        <input type="hidden" id="selectedRole" value="student">
+
+        <!-- 登录表单 -->
+        <form class="auth-form" id="loginForm">
+          <div class="form-group">
+            <label class="form-label">用户名（姓名）</label>
+            <input type="text" class="form-input" id="loginUsername" placeholder="请输入您的姓名" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">密码</label>
+            <input type="password" class="form-input" id="loginPassword" placeholder="请输入密码" required>
+          </div>
+          <button type="submit" class="btn btn-primary auth-btn"><span>登 录</span></button>
+        </form>
+
+        <!-- 注册表单 -->
+        <form class="auth-form" id="registerForm" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">用户名（姓名）</label>
+            <input type="text" class="form-input" id="regUsername" placeholder="请输入您的姓名" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">密码</label>
+            <input type="password" class="form-input" id="regPassword" placeholder="请设置密码" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">确认密码</label>
+            <input type="password" class="form-input" id="regConfirmPassword" placeholder="请再次输入密码" required>
+          </div>
+          <button type="submit" class="btn btn-primary auth-btn"><span>注 册</span></button>
+        </form>
+
+        <div class="auth-footer">
+          <p class="auth-footer-text" style="font-size: 12px; opacity: 0.6;" id="demoAccount">
+            学生：易守琴/20041102
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .role-card {
+      flex: 1;
+      text-align: center;
+      padding: 16px 8px;
+      border-radius: 16px;
+      border: 2px solid rgba(255, 182, 193, 0.3);
+      background: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #8d6e63;
+    }
+    .role-card:hover {
+      background: rgba(255, 255, 255, 0.8);
+      border-color: rgba(255, 64, 129, 0.4);
+      transform: translateY(-2px);
+    }
+    .role-card.active {
+      background: linear-gradient(135deg, rgba(255, 143, 171, 0.2), rgba(255, 64, 129, 0.15));
+      border-color: #ff4081;
+      box-shadow: 0 4px 15px rgba(255, 64, 129, 0.2);
+      color: #ff4081;
+    }
+    .auth-tabs {
+      display: flex;
+      margin-bottom: 24px;
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, 0.4);
+      border: 1px solid rgba(255, 182, 193, 0.3);
+    }
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #8d6e63;
+    }
+    .auth-tab.active {
+      background: linear-gradient(135deg, rgba(255, 143, 171, 0.3), rgba(255, 64, 129, 0.2));
+      color: #ff4081;
+    }
+  </style>
+
+  <script src="js/app.js"></script>
+  <script>
+    function createParticles() {
+      const c = document.getElementById('particles');
+      const cls = ['particle-cyan','particle-purple','particle-blue','particle-pink','particle-white'];
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle particle-dot ' + cls[Math.floor(Math.random()*cls.length)];
+        p.style.left = Math.random()*100+'%';
+        p.style.animationDelay = Math.random()*20+'s';
+        p.style.animationDuration = (15+Math.random()*15)+'s, '+(2+Math.random()*3)+'s';
+        p.style.width = (2+Math.random()*2)+'px';
+        p.style.height = p.style.width;
+        c.appendChild(p);
+      }
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle particle-glow ' + cls[Math.floor(Math.random()*4)];
+        p.style.left = Math.random()*100+'%';
+        p.style.animationDelay = Math.random()*25+'s';
+        p.style.animationDuration = (20+Math.random()*15)+'s, '+(3+Math.random()*3)+'s';
+        p.style.width = (4+Math.random()*4)+'px';
+        p.style.height = p.style.width;
+        c.appendChild(p);
+      }
+    }
+    createParticles();
+
+    function switchTab(tab) {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      if (tab === 'login') {
+        document.getElementById('tabLogin').classList.add('active');
+        document.getElementById('loginForm').style.display = '';
+        document.getElementById('registerForm').style.display = 'none';
+      } else {
+        document.getElementById('tabRegister').classList.add('active');
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('registerForm').style.display = '';
+      }
+    }
+
+    function selectRole(role, el) {
+      document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('selectedRole').value = role;
+      var demos = {
+        student: '学生：易守琴/20041102',
+        teacher: '教师：王老师/123456',
+        admin: '管理员：admin/123456'
+      };
+      document.getElementById('demoAccount').textContent = demos[role];
+    }
+
+    if (Storage.getCurrentUser()) {
+      const u = Storage.getCurrentUser();
+      window.location.href = u.role === 'admin' ? 'admin.html' : (u.role === 'teacher' ? 'teacher.html' : 'student.html');
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('logout') === '1') {
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          Utils.showToast('👋 您已安全退出登录，欢迎下次再来！', 'success');
+        }, 500);
+      });
+    }
+
+    // 登录
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var username = document.getElementById('loginUsername').value.trim();
+      var password = document.getElementById('loginPassword').value;
+      var role = document.getElementById('selectedRole').value;
+      if (!username) { Utils.showToast('请输入用户名', 'error'); return; }
+      if (!password) { Utils.showToast('请输入密码', 'error'); return; }
+      try {
+        var result = await Auth.login(username, password);
+        if (result.success) {
+          if (result.user.role !== role) {
+            var roleNames = {student:'学生', teacher:'教师', admin:'管理员'};
+            Utils.showToast('该账号是' + roleNames[result.user.role] + '身份，请选择正确的身份', 'error');
+            Storage.clearCurrentUser();
+            return;
+          }
+          Utils.showToast(result.message, 'success');
+          setTimeout(function() {
+            window.location.href = result.user.role === 'admin' ? 'admin.html' : (result.user.role === 'teacher' ? 'teacher.html' : 'student.html');
+          }, 800);
+        } else {
+          Utils.showToast(result.message, 'error');
+        }
+      } catch (err) {
+        Utils.showToast('网络错误，请检查服务器是否启动', 'error');
+      }
+    });
+
+    // 注册
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      var username = document.getElementById('regUsername').value.trim();
+      var password = document.getElementById('regPassword').value;
+      var confirmPassword = document.getElementById('regConfirmPassword').value;
+      var role = document.getElementById('selectedRole').value;
+      if (!username) { Utils.showToast('请输入用户名', 'error'); return; }
+      if (!password) { Utils.showToast('请输入密码', 'error'); return; }
+      if (password !== confirmPassword) { Utils.showToast('两次密码不一致', 'error'); return; }
+      try {
+        var result = await Auth.register(username, password, role);
+        if (result.success) {
+          Utils.showToast('注册成功，请登录', 'success');
+          document.getElementById('regUsername').value = '';
+          document.getElementById('regPassword').value = '';
+          document.getElementById('regConfirmPassword').value = '';
+          switchTab('login');
+          document.getElementById('loginUsername').value = username;
+        } else {
+          Utils.showToast(result.message, 'error');
+        }
+      } catch (err) {
+        Utils.showToast('网络错误，请检查服务器是否启动', 'error');
+      }
+    });
+  </script>
+</body>
+</html>

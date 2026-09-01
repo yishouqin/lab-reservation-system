@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注册 - AI机房预约系统</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="bg-animated"></div>
+  <div class="particles" id="particles"></div>
+
+  <header class="page-header">
+    <div class="page-header-left">
+      <div class="page-header-logo">🎀</div>
+      <span class="page-header-title">AI 机房预约系统</span>
+    </div>
+    <div class="page-header-right">
+      <a href="login.html" class="nav-btn nav-btn-primary"><span>🔑</span><span>返回登录</span></a>
+    </div>
+  </header>
+
+  <div class="auth-page">
+    <div class="auth-container">
+      <div class="glass-card auth-card">
+        <div class="auth-logo">
+          <div class="auth-logo-icon">🎀</div>
+          <h1 class="auth-title">注册账号</h1>
+          <p class="auth-subtitle">加入我们，开启智能预约之旅</p>
+        </div>
+        <!-- 身份选择 -->
+        <div style="display: flex; gap: 8px; margin-bottom: 24px;">
+          <div class="role-card active" onclick="selectRole('student', this)">
+            <div style="font-size: 28px;">🎓</div>
+            <div style="font-size: 14px; font-weight: 600;">学生</div>
+          </div>
+          <div class="role-card" onclick="selectRole('teacher', this)">
+            <div style="font-size: 28px;">👨‍🏫</div>
+            <div style="font-size: 14px; font-weight: 600;">教师</div>
+          </div>
+          <div class="role-card" onclick="selectRole('admin', this)">
+            <div style="font-size: 28px;">🔐</div>
+            <div style="font-size: 14px; font-weight: 600;">管理员</div>
+          </div>
+        </div>
+
+        <input type="hidden" id="selectedRole" value="student">
+
+        <form class="auth-form" id="registerForm">
+          <div class="form-group">
+            <label class="form-label">用户名（姓名）</label>
+            <input type="text" class="form-input" id="username" placeholder="请输入您的姓名" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">密码</label>
+            <input type="password" class="form-input" id="password" placeholder="请设置密码" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">确认密码</label>
+            <input type="password" class="form-input" id="confirmPassword" placeholder="请再次输入密码" required>
+          </div>
+          <button type="submit" class="btn btn-primary auth-btn"><span>注 册</span></button>
+        </form>
+        <div class="auth-footer">
+          <p class="auth-footer-text">已有账号？<a href="login.html" class="auth-footer-link">返回登录</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .role-card {
+      flex: 1;
+      text-align: center;
+      padding: 16px 8px;
+      border-radius: 16px;
+      border: 2px solid rgba(255, 182, 193, 0.3);
+      background: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      color: #8d6e63;
+    }
+    .role-card:hover {
+      background: rgba(255, 255, 255, 0.8);
+      border-color: rgba(255, 64, 129, 0.4);
+      transform: translateY(-2px);
+    }
+    .role-card.active {
+      background: linear-gradient(135deg, rgba(255, 143, 171, 0.2), rgba(255, 64, 129, 0.15));
+      border-color: #ff4081;
+      box-shadow: 0 4px 15px rgba(255, 64, 129, 0.2);
+      color: #ff4081;
+    }
+  </style>
+
+  <script src="js/app.js"></script>
+  <script>
+    function selectRole(role, el) {
+      document.querySelectorAll('.role-card').forEach(c => c.classList.remove('active'));
+      el.classList.add('active');
+      document.getElementById('selectedRole').value = role;
+    }
+
+    function createParticles() {
+      const c = document.getElementById('particles');
+      const cls = ['particle-cyan','particle-purple','particle-blue','particle-pink','particle-white'];
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle particle-dot ' + cls[Math.floor(Math.random()*cls.length)];
+        p.style.left = Math.random()*100+'%';
+        p.style.animationDelay = Math.random()*20+'s';
+        p.style.animationDuration = (15+Math.random()*15)+'s, '+(2+Math.random()*3)+'s';
+        p.style.width = (2+Math.random()*2)+'px';
+        p.style.height = p.style.width;
+        c.appendChild(p);
+      }
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle particle-glow ' + cls[Math.floor(Math.random()*4)];
+        p.style.left = Math.random()*100+'%';
+        p.style.animationDelay = Math.random()*25+'s';
+        p.style.animationDuration = (20+Math.random()*15)+'s, '+(3+Math.random()*3)+'s';
+        p.style.width = (4+Math.random()*4)+'px';
+        p.style.height = p.style.width;
+        c.appendChild(p);
+      }
+    }
+    createParticles();
+
+    document.getElementById('registerForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const role = document.getElementById('selectedRole').value;
+      if (!username) { Utils.showToast('请输入用户名', 'error'); return; }
+      if (!password) { Utils.showToast('请输入密码', 'error'); return; }
+      if (password !== confirmPassword) { Utils.showToast('两次密码不一致', 'error'); return; }
+      try {
+        const result = await Auth.register(username, password, role);
+        if (result.success) {
+          Utils.showToast('注册成功，请登录', 'success');
+          setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+        } else {
+          Utils.showToast(result.message, 'error');
+        }
+      } catch (err) {
+        Utils.showToast('网络错误，请检查服务器是否启动', 'error');
+      }
+    });
+  </script>
+</body>
+</html>

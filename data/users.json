@@ -1,0 +1,44 @@
+[
+  {
+    "username": "易守琴",
+    "password": "20041102",
+    "role": "student",
+    "createdAt": 1788154672666
+  },
+  {
+    "username": "admin",
+    "password": "123456",
+    "role": "admin",
+    "createdAt": 1788154672666
+  },
+  {
+    "username": "张三",
+    "password": "123456",
+    "role": "student",
+    "createdAt": 1788154672666
+  },
+  {
+    "username": "张万双",
+    "password": "123456",
+    "role": "student",
+    "createdAt": 1788155653069
+  },
+  {
+    "username": "王老师",
+    "password": "123456",
+    "role": "teacher",
+    "createdAt": 1788154672666
+  },
+  {
+    "username": "张小猪",
+    "password": "123456",
+    "role": "student",
+    "createdAt": 1788156036554
+  },
+  {
+    "username": "李万双",
+    "password": "123456",
+    "role": "teacher",
+    "createdAt": 1788156248681
+  }
+]

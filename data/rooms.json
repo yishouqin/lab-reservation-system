@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "name": "计算机机房一",
+    "capacity": 60,
+    "location": "教学楼A栋301",
+    "equipment": "高性能PCx60",
+    "description": "配备最新一代处理器"
+  },
+  {
+    "id": 2,
+    "name": "计算机机房二",
+    "capacity": 50,
+    "location": "教学楼A栋302",
+    "equipment": "图形工作站x50",
+    "description": "专业图形显卡"
+  },
+  {
+    "id": 3,
+    "name": "计算机机房三",
+    "capacity": 40,
+    "location": "教学楼B栋201",
+    "equipment": "服务器集群",
+    "description": "云计算实验环境"
+  }
+]

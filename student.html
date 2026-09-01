@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>学生中心 - AI机房预约系统</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="bg-animated"></div>
+  <div class="particles" id="particles"></div>
+
+  <div class="dashboard">
+    <header class="dashboard-header">
+      <div class="header-content">
+        <div class="header-logo">
+          <div class="header-logo-icon">🎀</div>
+          <span class="header-logo-text">AI 机房预约系统</span>
+        </div>
+        <div class="header-user">
+          <div class="user-info">
+            <div class="user-name" id="userName">同学</div>
+            <div class="user-role">学生</div>
+          </div>
+          <div class="user-avatar" id="userAvatar">同</div>
+          <button class="nav-btn nav-btn-secondary" id="logoutBtn" onclick="handleLogout()">
+            <span>🚪</span><span>退出登录</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <div class="welcome-section">
+        <h1 class="welcome-title">欢迎回来，<span class="highlight" id="welcomeName">同学</span> 👋</h1>
+        <p class="welcome-desc">AI智能推荐为您精选最优机房时段，让预约更高效</p>
+      </div>
+
+      <div class="stats-grid">
+        <div class="glass-card stat-card">
+          <div class="stat-icon cyan">📚</div>
+          <div class="stat-content"><div class="stat-value" id="totalRooms">3</div><div class="stat-label">可用机房</div></div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-icon green">📅</div>
+          <div class="stat-content"><div class="stat-value" id="myReservations">0</div><div class="stat-label">我的预约</div></div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-icon purple">🤖</div>
+          <div class="stat-content"><div class="stat-value">AI</div><div class="stat-label">智能推荐</div></div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-icon orange">⭐</div>
+          <div class="stat-content"><div class="stat-value" id="approvalRate">--</div><div class="stat-label">预约通过率</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2 class="section-title">🤖 AI 智能推荐</h2>
+          <span class="section-action" onclick="renderRecommendations()">🔄 刷新推荐</span>
+        </div>
+        <div class="recommend-grid" id="recommendGrid"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2 class="section-title">🏢 机房列表</h2>
+        </div>
+        <div class="rooms-grid" id="roomsGrid"></div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <h2 class="section-title">📋 我的预约</h2>
+          <span class="section-action" onclick="refreshMyReservations()">🔄 刷新</span>
+        </div>
+        <div class="reservation-list" id="reservationList"></div>
+      </div>
+    </main>
+  </div>
+
+  <div class="modal-overlay" id="reserveModal">
+    <div class="glass-card modal">
+      <div class="modal-header">
+        <h3 class="modal-title">📅 预约机房</h3>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group"><label class="form-label">机房</label><input type="text" class="form-input" id="modalRoomName" readonly></div>
+        <div class="form-group"><label class="form-label">选择日期</label>
+          <select class="form-input form-select" id="modalDate">
+            <option value="1">周一</option><option value="2">周二</option><option value="3">周三</option><option value="4">周四</option><option value="5">周五</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">选择时段</label>
+          <select class="form-input form-select" id="modalInterval">
+            <option value="1">上午 (08:00-12:00)</option><option value="2">下午 (14:00-18:00)</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">预约用途</label><input type="text" class="form-input" id="modalPurpose" placeholder="请输入预约用途（如：程序设计实验）"></div>
+        <div id="aiSuggestion" style="display:none;padding:16px;border-radius:10px;margin-bottom:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:18px;">🤖</span><span style="font-weight:600;font-size:14px;">AI 智能评估</span></div>
+          <div id="aiSuggestionContent" style="font-size:13px;line-height:1.6;"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary btn-sm" onclick="closeModal()">取消</button>
+        <button class="btn btn-primary btn-sm" onclick="submitReservation()">确认预约</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="confirmModal">
+    <div class="glass-card modal confirm-dialog">
+      <div class="modal-body">
+        <div class="confirm-icon danger" id="confirmIcon">⚠️</div>
+        <div class="confirm-title" id="confirmTitle">确认操作</div>
+        <div class="confirm-message" id="confirmMessage">确定要执行此操作吗？</div>
+        <div class="confirm-buttons">
+          <button class="confirm-btn confirm-btn-cancel" id="confirmCancelBtn">取消</button>
+          <button class="confirm-btn confirm-btn-confirm" id="confirmOkBtn">确认</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+  <script>
+    let currentRoomId = null;
+    let allRooms = [];
+    let allReservations = [];
+    let myReservations = [];
+
+    function createParticles() {
+      const c = document.getElementById('particles');
+      const cls = ['particle-cyan','particle-purple','particle-blue','particle-pink','particle-white'];
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle particle-dot ' + cls[Math.floor(Math.random()*cls.length)];
+        p.style.left = Math.random()*100+'%';
+        p.style.animationDelay = Math.random()*20+'s';
+        p.style.animationDuration = (15+Math.random()*15)+'s, '+(2+Math.random()*3)+'s';
+        p.style.width = (2+Math.random()*2)+'px';
+        p.style.height = p.style.width;
+        c.appendChild(p);
+      }
+      for (let i = 0; i < 12; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle particle-glow ' + cls[Math.floor(Math.random()*4)];
+        p.style.left = Math.random()*100+'%';
+        p.style.animationDelay = Math.random()*25+'s';
+        p.style.animationDuration = (20+Math.random()*15)+'s, '+(3+Math.random()*3)+'s';
+        p.style.width = (4+Math.random()*4)+'px';
+        p.style.height = p.style.width;
+        c.appendChild(p);
+      }
+    }
+
+    function showConfirmDialog(options) {
+      const m = document.getElementById('confirmModal');
+      document.getElementById('confirmIcon').textContent = options.icon || '⚠️';
+      document.getElementById('confirmIcon').className = 'confirm-icon ' + (options.type || 'warning');
+      document.getElementById('confirmTitle').textContent = options.title || '确认操作';
+      document.getElementById('confirmMessage').textContent = options.message || '确定要执行此操作吗？';
+      document.getElementById('confirmOkBtn').textContent = options.confirmText || '确认';
+      document.getElementById('confirmCancelBtn').textContent = options.cancelText || '取消';
+      m.classList.add('active');
+      const ok = document.getElementById('confirmOkBtn');
+      const cancel = document.getElementById('confirmCancelBtn');
+      const newOk = ok.cloneNode(true);
+      const newCancel = cancel.cloneNode(true);
+      ok.parentNode.replaceChild(newOk, ok);
+      cancel.parentNode.replaceChild(newCancel, cancel);
+      newOk.addEventListener('click', function() { m.classList.remove('active'); if (options.onConfirm) options.onConfirm(); });
+      newCancel.addEventListener('click', function() { m.classList.remove('active'); if (options.onCancel) options.onCancel(); });
+    }
+
+    function handleLogout() {
+      Storage.clearCurrentUser();
+      window.location.href = 'login.html?logout=1';
+    }
+
+    async function init() {
+      createParticles();
+      const user = Storage.getCurrentUser();
+      if (!user) { window.location.href = 'login.html'; return; }
+      document.getElementById('userName').textContent = user.username;
+      document.getElementById('welcomeName').textContent = user.username;
+      document.getElementById('userAvatar').textContent = user.username.charAt(0);
+      await loadAll();
+    }
+
+    async function loadAll() {
+      try {
+        allRooms = await Storage.getRooms();
+        allReservations = await Storage.getReservations();
+        myReservations = await Storage.getUserReservations(user.username);
+        renderRooms();
+        renderMyReservations();
+        updateStats();
+        await renderRecommendations();
+      } catch (e) {
+        Utils.showToast('加载失败: ' + e.message, 'error');
+      }
+    }
+
+    let user = Storage.getCurrentUser();
+
+    function renderRooms() {
+      const grid = document.getElementById('roomsGrid');
+      grid.innerHTML = allRooms.map(room => {
+        let totalLoad = 0, cnt = 0;
+        for (let d = 1; d <= 5; d++) {
+          for (let i = 1; i <= 2; i++) {
+            const active = allReservations.filter(r => r.date == d && r.interval == i && r.roomId == room.id && (r.status === 'pending' || r.status === 'approved'));
+            totalLoad += active.length / room.capacity;
+            cnt++;
+          }
+        }
+        const avgLoad = totalLoad / cnt;
+        const heat = AIRecommender.getHeatLevel(avgLoad);
+        const progressClass = avgLoad < 0.3 ? 'green' : (avgLoad < 0.7 ? 'orange' : 'red');
+        const free = room.capacity - allReservations.filter(r => r.roomId == room.id && (r.status === 'pending' || r.status === 'approved')).length;
+        return '<div class="glass-card room-card">' +
+          '<div class="room-header"><div class="room-name">' + room.name + '</div><div class="room-status ' + heat.class + '">' + heat.icon + ' ' + heat.level + '</div></div>' +
+          '<div class="room-info">' +
+            '<div class="room-info-item"><span class="room-info-label">位置</span><span class="room-info-value">' + room.location + '</span></div>' +
+            '<div class="room-info-item"><span class="room-info-label">容量</span><span class="room-info-value">' + room.capacity + ' 人</span></div>' +
+            '<div class="room-info-item"><span class="room-info-label">设备</span><span class="room-info-value">' + room.equipment + '</span></div>' +
+            '<div class="room-info-item"><span class="room-info-label">空余</span><span class="room-info-value" style="color:var(--accent-green);font-weight:700;">' + Math.max(0, free) + ' 位</span></div>' +
+          '</div>' +
+          '<div class="room-progress"><div class="progress-bar"><div class="progress-fill ' + progressClass + '" style="width:' + (avgLoad*100) + '%"></div></div></div>' +
+          '<p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6;">' + room.description + '</p>' +
+          '<div class="room-footer"><button class="btn btn-primary btn-sm" onclick="openReserveModal(' + room.id + ', \'' + room.name + '\')">立即预约</button></div>' +
+        '</div>';
+      }).join('');
+    }
+
+    async function renderRecommendations() {
+      const u = Storage.getCurrentUser();
+      const grid = document.getElementById('recommendGrid');
+      grid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-secondary);">🤖 AI 正在分析最佳推荐...</div>';
+      try {
+        const recs = await AIRecommender.recommend(u.username);
+        if (recs.length === 0) {
+          grid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-secondary);">暂无推荐数据</div>';
+          return;
+        }
+        grid.innerHTML = recs.map((rec, index) => {
+          const rank = index + 1;
+          const heat = AIRecommender.getHeatLevel(rec.currentLoad);
+          return '<div class="glass-card recommend-card">' +
+            '<div class="recommend-rank rank-' + rank + '">' + rank + '</div>' +
+            '<div class="recommend-title">' + rec.roomName + '</div>' +
+            '<div class="recommend-stats">' +
+              '<div class="recommend-stat"><div class="recommend-stat-value">' + Utils.formatDate(rec.date) + '</div><div class="recommend-stat-label">推荐日期</div></div>' +
+              '<div class="recommend-stat"><div class="recommend-stat-value" style="font-size:14px;">' + Utils.formatInterval(rec.interval).split(' ')[0] + '</div><div class="recommend-stat-label">推荐时段</div></div>' +
+            '</div>' +
+            '<div class="recommend-desc">' +
+              heat.icon + ' 当前热度：<strong>' + heat.level + '</strong>（占用 ' + Math.round(rec.currentLoad*100) + '%）<br>' +
+              '✅ 历史通过率：<strong>' + Math.round(rec.successRate*100) + '%</strong><br>' +
+              (rec.hasConflict ? '⚠️ <span style="color:var(--accent-orange);">该时段您已有预约</span>' : '✨ 时段空闲，推荐预约') +
+            '</div>' +
+            '<div class="recommend-score"><span class="score-label">综合推荐指数</span><span class="score-value">' + (rec.score*100).toFixed(1) + '分</span></div>' +
+            '<button class="btn btn-primary btn-sm" style="width:100%;" onclick="quickReserve(' + rec.roomId + ', \'' + rec.roomName + '\', ' + rec.date + ', ' + rec.interval + ')">🚀 一键预约</button>' +
+          '</div>';
+        }).join('');
+      } catch (e) {
+        grid.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-secondary);">推荐加载失败</div>';
+      }
+    }
+
+    function renderMyReservations() {
+      const list = document.getElementById('reservationList');
+      if (myReservations.length === 0) {
+        list.innerHTML = '<div class="glass-card" style="padding:40px;text-align:center;"><div style="font-size:48px;margin-bottom:16px;">📭</div><div style="color:var(--text-secondary);font-size:14px;">暂无预约记录，快去预约机房吧~</div></div>';
+        return;
+      }
+      myReservations.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      list.innerHTML = myReservations.map(r => {
+        const room = allRooms.find(rm => rm.id == r.roomId);
+        const st = Utils.formatStatus(r.status);
+        const canCancel = r.status === 'pending' || r.status === 'approved';
+        return '<div class="glass-card reservation-item">' +
+          '<div class="reservation-icon">🖥️</div>' +
+          '<div class="reservation-info">' +
+            '<div class="reservation-room">' + (room ? room.name : '未知机房') + '</div>' +
+            '<div class="reservation-time">' + Utils.formatDate(r.date) + ' · ' + Utils.formatInterval(r.interval) + (r.purpose ? ' · 用途：' + r.purpose : '') + '</div>' +
+          '</div>' +
+          '<div class="reservation-status ' + st.class + '">' + st.icon + ' ' + st.text + '</div>' +
+          (canCancel ? '<button class="reservation-cancel" onclick="cancelReservation(' + r.id + ')">取消预约</button>' : '') +
+        '</div>';
+      }).join('');
+    }
+
+    function updateStats() {
+      document.getElementById('totalRooms').textContent = allRooms.length;
+      document.getElementById('myReservations').textContent = myReservations.length;
+      const approved = myReservations.filter(r => r.status === 'approved').length;
+      const total = myReservations.filter(r => r.status === 'approved' || r.status === 'rejected').length;
+      document.getElementById('approvalRate').textContent = total === 0 ? '--' : Math.round(approved/total*100) + '%';
+    }
+
+    function openReserveModal(roomId, roomName) {
+      currentRoomId = roomId;
+      document.getElementById('modalRoomName').value = roomName;
+      document.getElementById('reserveModal').classList.add('active');
+      updateAISuggestion();
+    }
+
+    function quickReserve(roomId, roomName, date, interval) {
+      currentRoomId = roomId;
+      document.getElementById('modalRoomName').value = roomName;
+      document.getElementById('modalDate').value = date;
+      document.getElementById('modalInterval').value = interval;
+      document.getElementById('reserveModal').classList.add('active');
+      updateAISuggestion();
+    }
+
+    function closeModal() {
+      document.getElementById('reserveModal').classList.remove('active');
+      document.getElementById('modalPurpose').value = '';
+      document.getElementById('aiSuggestion').style.display = 'none';
+    }
+
+    function updateAISuggestion() {
+      const u = Storage.getCurrentUser();
+      const date = parseInt(document.getElementById('modalDate').value);
+      const interval = parseInt(document.getElementById('modalInterval').value);
+      const room = allRooms.find(r => r.id === currentRoomId);
+      if (!room) return;
+      const active = allReservations.filter(r => r.date == date && r.interval == interval && r.roomId == currentRoomId && (r.status === 'pending' || r.status === 'approved'));
+      const load = active.length / room.capacity;
+      const myRes = allReservations.filter(r => r.stuName === u.username);
+      const total = myRes.length;
+      const cancelled = myRes.filter(r => r.status === 'cancelled').length;
+      const rejected = myRes.filter(r => r.status === 'rejected').length;
+      const cancelRate = total === 0 ? 0 : cancelled / total;
+      const failRate = total === 0 ? 0 : rejected / total;
+      const conflict = myRes.some(r => r.date == date && r.interval == interval && (r.status === 'pending' || r.status === 'approved'));
+      let pass = true, reason = '学生信誉良好，机房空闲充足';
+      if (cancelRate > 0.3 || failRate > 0.4) { pass = false; reason = '历史取消率(' + Math.round(cancelRate*100) + '%)或失败率(' + Math.round(failRate*100) + '%)过高'; }
+      else if (conflict) { pass = false; reason = '该时段您已有预约'; }
+      else if (load > 0.8) { pass = false; reason = '该时段机房负载已达' + Math.round(load*100) + '%'; }
+      const el = document.getElementById('aiSuggestion');
+      const ct = document.getElementById('aiSuggestionContent');
+      el.style.display = 'block';
+      el.style.background = pass ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)';
+      el.style.border = '1px solid ' + (pass ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)');
+      ct.innerHTML = '<span style="color:' + (pass ? 'var(--accent-green)' : 'var(--accent-red)') + ';font-weight:600;">' + (pass ? '✅ 建议通过' : '❌ 建议拒绝') + '</span><br><span style="color:var(--text-secondary);">' + reason + '</span>';
+    }
+
+    document.getElementById('modalDate').addEventListener('change', updateAISuggestion);
+    document.getElementById('modalInterval').addEventListener('change', updateAISuggestion);
+
+    async function submitReservation() {
+      const u = Storage.getCurrentUser();
+      const date = parseInt(document.getElementById('modalDate').value);
+      const interval = parseInt(document.getElementById('modalInterval').value);
+      const purpose = document.getElementById('modalPurpose').value.trim();
+      if (!currentRoomId) { Utils.showToast('请选择机房', 'error'); return; }
+      const existing = myReservations.find(r => r.date == date && r.interval == interval && (r.status === 'pending' || r.status === 'approved'));
+      if (existing) { Utils.showToast('您在该时段已有预约，请勿重复预约', 'error'); return; }
+      try {
+        await Storage.addReservation({ stuName: u.username, roomId: currentRoomId, date: date, interval: interval, purpose: purpose });
+        Utils.showToast('预约提交成功，等待审核', 'success');
+        closeModal();
+        await loadAll();
+      } catch (e) {
+        Utils.showToast('预约失败: ' + e.message, 'error');
+      }
+    }
+
+    function cancelReservation(id) {
+      showConfirmDialog({
+        icon: '🗑️', type: 'warning', title: '取消预约',
+        message: '确定要取消这个预约吗？取消后可以重新预约其他时段。',
+        confirmText: '确认取消', cancelText: '再想想',
+        onConfirm: async function() {
+          await Storage.cancelReservation(id);
+          Utils.showToast('预约已取消', 'success');
+          await loadAll();
+        }
+      });
+    }
+
+    document.getElementById('reserveModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+    // 自动审核通过所有待审核预约
+    async function autoApprovePending() {
+      try {
+        const u = Storage.getCurrentUser();
+        myReservations = await Storage.getUserReservations(u.username);
+        const pending = myReservations.filter(r => r.status === 'pending');
+        for (const r of pending) {
+          await Storage.reviewReservation(r.id, 'approved');
+        }
+        return pending.length;
+      } catch (e) { return 0; }
+    }
+
+    // 刷新我的预约（自动审核通过）
+    async function refreshMyReservations() {
+      try {
+        const u = Storage.getCurrentUser();
+        const approvedCount = await autoApprovePending();
+        myReservations = await Storage.getUserReservations(u.username);
+        allReservations = await Storage.getReservations();
+        renderMyReservations();
+        updateStats();
+        renderRooms();
+        if (approvedCount > 0) {
+          Utils.showToast('✅ 已自动审核通过 ' + approvedCount + ' 条预约', 'success');
+        } else {
+          Utils.showToast('数据已刷新', 'success');
+        }
+      } catch (e) {
+        Utils.showToast('刷新失败: ' + e.message, 'error');
+      }
+    }
+
+    // 自动刷新（每30秒，含自动审核）
+    setInterval(async function() {
+      try {
+        const u = Storage.getCurrentUser();
+        if (u) {
+          await autoApprovePending();
+          myReservations = await Storage.getUserReservations(u.username);
+          allReservations = await Storage.getReservations();
+          renderMyReservations();
+          updateStats();
+          renderRooms();
+        }
+      } catch (e) {}
+    }, 30000);
+
+    init();
+  </script>
+</body>
+</html>

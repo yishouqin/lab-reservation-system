@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1788155677137,
+    "stuName": "易守琴",
+    "roomId": 1,
+    "date": 2,
+    "interval": 1,
+    "purpose": "数据结构实验",
+    "status": "approved",
+    "createdAt": "2026-08-31T05:54:37.137Z"
+  },
+  {
+    "id": 1788155692935,
+    "stuName": "张万双",
+    "roomId": 3,
+    "date": 1,
+    "interval": 1,
+    "purpose": "",
+    "status": "approved",
+    "createdAt": "2026-08-31T05:54:52.935Z"
+  },
+  {
+    "id": 1788155807861,
+    "stuName": "易守琴",
+    "roomId": 2,
+    "date": 1,
+    "interval": 1,
+    "purpose": "",
+    "status": "approved",
+    "createdAt": "2026-08-31T05:56:47.861Z"
+  },
+  {
+    "id": 1788155907952,
+    "stuName": "张万双",
+    "roomId": 1,
+    "date": 1,
+    "interval": 2,
+    "purpose": "",
+    "status": "approved",
+    "createdAt": "2026-08-31T05:58:27.952Z"
+  },
+  {
+    "id": 1788156064497,
+    "stuName": "张小猪",
+    "roomId": 2,
+    "date": 1,
+    "interval": 1,
+    "purpose": "",
+    "status": "approved",
+    "createdAt": "2026-08-31T06:01:04.497Z"
+  },
+  {
+    "id": 1788156410782,
+    "stuName": "张小猪",
+    "roomId": 2,
+    "date": 1,
+    "interval": 2,
+    "purpose": "",
+    "status": "approved",
+    "createdAt": "2026-08-31T06:06:50.782Z"
+  },
+  {
+    "id": 1788156735069,
+    "stuName": "易守琴",
+    "roomId": 1,
+    "date": 1,
+    "interval": 2,
+    "purpose": "",
+    "status": "approved",
+    "createdAt": "2026-08-31T06:12:15.069Z"
+  },
+  {
+    "id": 1788226396248,
+    "stuName": "张小猪",
+    "roomId": 2,
+    "date": 2,
+    "interval": 1,
+    "purpose": "",
+    "status": "cancelled",
+    "createdAt": "2026-09-01T01:33:16.248Z"
+  },
+  {
+    "id": 1788226476076,
+    "stuName": "张小猪",
+    "roomId": 1,
+    "date": 2,
+    "interval": 2,
+    "purpose": "",
+    "status": "approved",
+    "createdAt": "2026-09-01T01:34:36.076Z"
+  }
+]

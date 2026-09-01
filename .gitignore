@@ -1,0 +1,7 @@
+node_modules/
+.uploads/
+.trae-html-share-packages/
+*.bat
+create_server.py
+test.txt
+tunnel.js
