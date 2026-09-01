@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const serverless = require('serverless-http');
 
 const app = express();
 app.use(cors());
@@ -130,4 +131,5 @@ app.get('/api/ai/report', (req, res) => {
   res.json({ success: true, data: { total, pending, approved, rejected, cancelled, passRate: total > 0 ? Math.round(approved / total * 100) : 0, roomHeat, dayCount, topFree: slots.slice(0, 5), topBusy: slots.slice(-3).reverse().filter(s => s.load > 0.05), anomalies } });
 });
 
-module.exports = app;
+module.exports.handler = serverless(app);
+module.exports.app = app;
